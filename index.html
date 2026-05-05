@@ -1,0 +1,145 @@
+<!DOCTYPE html><html>
+<head>
+    <title>Disease Risk Prediction</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f9;
+            text-align: center;
+        }
+        .container {
+            width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+            margin-top: 30px;
+        }
+        input, select {
+            width: 90%;
+            padding: 8px;
+            margin: 6px;
+        }
+        button {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border: none;
+            width: 95%;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 15px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head><body><div class="container">
+    <h2>Early Disease Risk Prediction</h2><input type="number" id="age" placeholder="Age">
+<input type="number" id="glucose" placeholder="Glucose Level">
+<input type="number" id="bp" placeholder="Blood Pressure">
+<input type="number" id="bmi" placeholder="BMI">
+
+<select id="smoking">
+    <option value="">Smoking</option>
+    <option value="0">Non-Smoker</option>
+    <option value="1">Smoker</option>
+</select>
+
+<select id="activity">
+    <option value="">Physical Activity</option>
+    <option value="2">High</option>
+    <option value="1">Moderate</option>
+    <option value="0">Low</option>
+</select>
+
+<input type="number" id="cholesterol" placeholder="Cholesterol">
+
+<select id="alcohol">
+    <option value="">Alcohol</option>
+    <option value="0">No</option>
+    <option value="1">Yes</option>
+</select>
+
+<button onclick="predict()">Predict Risk</button>
+
+<div class="result" id="result"></div>
+
+</div><script>
+function predict() {
+
+    let age = parseFloat(document.getElementById("age").value);
+    let glucose = parseFloat(document.getElementById("glucose").value);
+    let bp = parseFloat(document.getElementById("bp").value);
+    let bmi = parseFloat(document.getElementById("bmi").value);
+    let smoking = document.getElementById("smoking").value;
+    let activity = document.getElementById("activity").value;
+    let cholesterol = parseFloat(document.getElementById("cholesterol").value);
+    let alcohol = document.getElementById("alcohol").value;
+
+    // ✅ Validation to avoid blank screen
+    if(isNaN(age) || isNaN(glucose) || isNaN(bp) || isNaN(bmi) || 
+       smoking === "" || activity === "" || isNaN(cholesterol) || alcohol === "") {
+        document.getElementById("result").innerHTML = "⚠️ Please fill all fields correctly";
+        document.getElementById("result").style.background = "#ffe6e6";
+        return;
+    }
+
+    let risk = 0;
+
+    // 🎯 Weighted scoring
+    risk += (glucose / 200) * 25;
+    risk += (bmi / 40) * 20;
+    risk += (bp / 120) * 15;
+    risk += (cholesterol / 300) * 15;
+    risk += (age / 100) * 10;
+
+    if(smoking == "1") risk += 8;
+    if(alcohol == "1") risk += 5;
+
+    if(activity == "0") risk += 10;
+    else if(activity == "1") risk += 5;
+
+    // 🎲 Variation
+    risk += Math.random() * 5;
+
+    risk = Math.round(risk);
+
+    // 🧠 Disease prediction
+    let disease = "Healthy";
+
+    if(glucose > 130 && bmi > 28) {
+        disease = "Diabetes Risk";
+    } 
+    else if(bp > 85 && cholesterol > 210) {
+        disease = "Heart Disease Risk";
+    } 
+    else if(smoking == "1" && age > 40) {
+        disease = "Lung Disease Risk";
+    } 
+    else if(risk > 50) {
+        disease = "General Health Risk";
+    }
+
+    let resultText = "";
+
+    if(risk > 65) {
+        resultText = "⚠️ High Risk (" + risk + "%) - " + disease;
+        document.getElementById("result").style.background = "#ffcccc";
+    }
+    else if(risk > 35) {
+        resultText = "Moderate Risk (" + risk + "%) - " + disease;
+        document.getElementById("result").style.background = "#fff3cd";
+    }
+    else {
+        resultText = "Low Risk (" + risk + "%) - " + disease + " ✅";
+        document.getElementById("result").style.background = "#ccffcc";
+    }
+
+    document.getElementById("result").innerHTML = resultText;
+}
+</script></body>
+</html>
